@@ -4,8 +4,9 @@
 //#include "tasking.h"
 
 #define USE_MUTEX
+#include "libinc_joystick.h"
 #include "inc_joytick.h"
-
+#include "mytasks.h"
 
 
 
@@ -39,10 +40,13 @@ void setup(){
   Serial.setDebugOutput(true);
   delay(5000);
   
-  
+  task_setup();
   joystick_setup();
   Serial.println("Starting up");
-  xTaskCreate (joystick_infini_loop,"testloop",2500,(void*)&task_number0,1,NULL);
+  xTaskCreate (joystick_infini_task,"Joystick Output Main Task",14500,(void*)&task_number0,1,NULL);
+  xTaskCreate (joystick_run_task,"Joystick Test Task",14500,(void*)&task_number1,1,NULL);
+  //xTaskCreate (joystick_infini_loop,"testloop",2500,(void*)&task_number0,1,NULL);
+  //
   //joystick_loop
   HS = ESP.getHeapSize(); //total heap size
   FH = ESP.getFreeHeap(); //available heap
@@ -54,38 +58,5 @@ void setup(){
 
 void loop(){
     
-}
-
-void loopX(){
-  loopnum++;
-  //joystick_loop();
-////  vTaskDelay(10);
-Serial.println("");
-Serial.print("getHeapSize       ");
-Serial.print(ESP.getHeapSize());
-Serial.print(" / ");
-Serial.println(HS);
-
-Serial.print("getFreeHeap       ");
-Serial.print(ESP.getFreeHeap());
-Serial.print(" / ");
-Serial.println(FH);
-
-Serial.print("getMinFreeHeap    ");
-Serial.print(ESP.getMinFreeHeap());
-Serial.print(" / ");
-Serial.println(MFH);
-
-Serial.print("getMaxAllocHeap   ");
-Serial.print(ESP.getMaxAllocHeap());
-Serial.print(" / ");
-Serial.println(MAH);
-
-
-Serial.println("-----------------------------------------");
-
-Serial.print("Cycle :");
-Serial.println(loopnum);
-MyButtonTest() ;
 }
 

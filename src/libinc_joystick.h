@@ -1,3 +1,4 @@
+#include "tof_sensor.h"
 #include "Joystick_ESP32S2.h"
 
 #pragma once

@@ -28,7 +28,12 @@ void task_setup() {
         myjoy_axis[6]= 10000;
 }
 
-
+/*
+*
+*
+*   Task which finally sends the joystick output
+*
+*/
 void joystick_infini_task(void *pvParameters){
   int resetcount = 0;
   int mstep = 0;
@@ -80,8 +85,13 @@ void joystick_infini_task(void *pvParameters){
 
 
 
-
-
+/*
+*
+*
+* dummy task to populate the joystick
+*
+*
+*/
 
 void joystick_run_task(void *pvParameters){
   int resetcount = 0;
@@ -105,7 +115,7 @@ void joystick_run_task(void *pvParameters){
 
       }
 
-      for (mstep=0; mstep < 7 ; mstep++)
+      for (mstep=1; mstep < 7 ; mstep++)
       {
         myjoy_axis[mstep] = axval;
 
@@ -143,3 +153,41 @@ void joystick_run_task(void *pvParameters){
      
 }
 
+/*
+*
+*
+*
+*
+*/
+
+void joystick_run_tof_task(void *pvParameters){
+  uint16_t myrange =0;
+  uint32_t axisout = 0;
+  esp_task_wdt_init(5, false);
+  esp_task_wdt_add(NULL);
+  while(1){
+    
+    myrange = tof_getrange();
+    if(myrange > 300) myrange = 300;
+    axisout = map(myrange,0,300,0,65535);
+
+
+    if (xSemaphoreTake (xMutex, portMAX_DELAY)) {  // take the mutex
+      vTaskDelay(1);
+      myjoy_axis[0] = axisout;
+
+      xSemaphoreGive (xMutex);  // release the mutex
+    }else{
+      Serial.println("xmute failed");
+      vTaskDelay(1);
+    }
+
+    
+
+
+
+    esp_task_wdt_reset();
+    vTaskDelay(10);
+  }
+}
+     

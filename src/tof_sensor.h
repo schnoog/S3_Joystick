@@ -1,6 +1,4 @@
-#include <Wire.h>
-#define I2C_SDA 36
-#define I2C_SCL 37
+
 #include "Adafruit_VL53L0X.h"
 
 //    Wire.begin();
@@ -8,6 +6,7 @@
 
 
 Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+Adafruit_VL53L0X::VL53L0X_Sense_config_t long_range = Adafruit_VL53L0X::VL53L0X_SENSE_HIGH_ACCURACY;
 
 void tof_setup() {
   Serial.println("Adafruit VL53L0X test");

@@ -20,7 +20,11 @@ void tof_setup() {
 
 
 uint16_t tof_getrange() {
-  VL53L0X_RangingMeasurementData_t measure;
-  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
-  return measure.RangeMilliMeter;
+    static uint16_t LastPoint;  
+    VL53L0X_RangingMeasurementData_t measure;
+    lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+    if (measure.RangeStatus != 4) { 
+    LastPoint = measure.RangeMilliMeter;
+    }
+    return LastPoint;
 }

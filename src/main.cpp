@@ -12,7 +12,7 @@
 #include "inc_joytick.h"
 #include "mytasks.h"
 #include "i2ctools.h"
-
+#include "adc_ads1115_sensor.h"
 
 
 
@@ -47,7 +47,7 @@ void setup(){
   tof_setup();  
   task_setup();
   joystick_setup();
-
+  ads_setup();
   Serial.println("Starting up");
   xTaskCreate (joystick_infini_task,"Joystick Output Main Task",14500,(void*)&task_number0,1,NULL);
   xTaskCreate (joystick_run_task,"Joystick Test Task",14500,(void*)&task_number1,1,NULL);
@@ -74,6 +74,8 @@ void setup(){
 void loop(){
 //    uint16_t Mess = tof_getrange();
 //    Serial.println(Mess);
-    delay (1);
+    ads_read();
+
+    delay (1000);
 }
 

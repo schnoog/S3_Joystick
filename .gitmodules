@@ -7,9 +7,6 @@
 [submodule "lib/ADS1115_WE"]
 	path = lib/ADS1115_WE
 	url = https://github.com/wollewald/ADS1115_WE.git
-[submodule "lib/arduino-mcp23017"]
-	path = lib/arduino-mcp23017
-	url = https://github.com/blemasle/arduino-mcp23017.git
 [submodule "lib/Adafruit-MCP23017-Arduino-Library"]
 	path = lib/Adafruit-MCP23017-Arduino-Library
 	url = https://github.com/adafruit/Adafruit-MCP23017-Arduino-Library.git

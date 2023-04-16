@@ -51,7 +51,7 @@ void setup(){
   ads_setup();
   mcp23017_setup();
   Serial.println("Starting up");
-  xTaskCreate (joystick_infini_task,"Joystick Output Main Task",14500,(void*)&task_number0,1,NULL);
+  xTaskCreate (joystick_infini_task,"Joystick Output Main Task",14500,(void*)&task_number0,2,NULL);
   xTaskCreate (joystick_run_task,"Joystick Test Task",14500,(void*)&task_number1,1,NULL);
   xTaskCreate (joystick_run_tof_task,"Joystick TimeOfFlight Task",2500,(void*)&task_number1,1,NULL);
   //xTaskCreate (joystick_infini_loop,"testloop",2500,(void*)&task_number0,1,NULL);

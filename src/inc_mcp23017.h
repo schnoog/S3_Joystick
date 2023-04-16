@@ -1,4 +1,30 @@
+#include <Adafruit_MCP23X17.h>
 
+Adafruit_MCP23X17 mcp;
+
+
+void mcp23017_setup(){
+    int BP=0;
+    mcp.begin_I2C(0x21);
+    for(BP=0; BP < 16; BP++){
+
+    mcp.pinMode(BP, INPUT_PULLUP);
+    }
+}
+
+void mcp23017_loop(){
+    int BP=0;
+    int TMP=0;
+    for(BP=0; BP < 16; BP++){
+        TMP = mcp.digitalRead(BP);
+        Serial.print(TMP);
+    }
+    Serial.println("");
+
+}
+
+
+/*
 #include <MCP23017.h>
 
 #define MCP23017_ADDR 0x21
@@ -28,3 +54,4 @@ void mcp23017_loop(){
     Serial.println(currentB,BIN);
 
 }
+*/

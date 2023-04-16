@@ -10,3 +10,9 @@
 [submodule "lib/arduino-mcp23017"]
 	path = lib/arduino-mcp23017
 	url = https://github.com/blemasle/arduino-mcp23017.git
+[submodule "lib/Adafruit-MCP23017-Arduino-Library"]
+	path = lib/Adafruit-MCP23017-Arduino-Library
+	url = https://github.com/adafruit/Adafruit-MCP23017-Arduino-Library.git
+[submodule "lib/Adafruit_BusIO"]
+	path = lib/Adafruit_BusIO
+	url = https://github.com/adafruit/Adafruit_BusIO.git

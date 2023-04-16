@@ -1,83 +1,115 @@
+#include <Arduino.h>
+#include "settings.h"
+#include "includer.h"
+#include "initiator.h"
 
 
-//#include <HardwareSerial.h>
-//#include "tasking.h"
-#include <Wire.h>
-#define I2C_SDA 36
-#define I2C_SCL 37
-#define USE_MUTEX
-
-
-#include "libinc_joystick.h"
-#include "inc_joytick.h"
-#include "mytasks.h"
-#include "i2ctools.h"
-#include "adc_ads1115_sensor.h"
-#include "inc_mcp23017.h"
-
-
-
-
-
-int loopnum = 0;
-
-
-uint32_t HS = 0;
-uint32_t FH = 0;
-uint32_t MFH = 0;
-uint32_t MAH = 0;
-
-uint32_t CHS = 0;
-uint32_t CFH = 0;
-uint32_t CMFH = 0;
-uint32_t CMAH = 0;
-
-
-
+#include "func_include.h"
 
 
 
 void setup(){
-  static int task_number0 = 0;
-  static int task_number1 = 0;
-  Serial.begin(115200);
-  delay(100);
-  //Serial1.begin(115200);
-  Serial.setDebugOutput(true);
-  delay(5000);
-  tof_setup();  
-  task_setup();
-  joystick_setup();
-  ads_setup();
-  mcp23017_setup();
-  Serial.println("Starting up");
-  xTaskCreate (joystick_infini_task,"Joystick Output Main Task",14500,(void*)&task_number0,2,NULL);
-  xTaskCreate (joystick_run_task,"Joystick Test Task",14500,(void*)&task_number1,1,NULL);
-  xTaskCreate (joystick_run_tof_task,"Joystick TimeOfFlight Task",2500,(void*)&task_number1,1,NULL);
-  //xTaskCreate (joystick_infini_loop,"testloop",2500,(void*)&task_number0,1,NULL);
-  //
-  //joystick_loop
-  HS = ESP.getHeapSize(); //total heap size
-  FH = ESP.getFreeHeap(); //available heap
-  MFH = ESP.getMinFreeHeap(); //lowest level of free heap since boot
-  MAH = ESP.getMaxAllocHeap(); //largest block of heap that can be allocated at once
+    Serial.begin(115200);
+    int WF = 0;
+    int PreWait = 5;
+    Serial.println("Waiting");
+    for (WF = 0; WF < PreWait; WF++){
+        Serial.println(WF);
+        delay(1000);
+    }
+    /*
+    * Check 4 MCP I2C Adds
+    */
+   bool i2cavail = false;
+   for(int i=0; i <MCP23017_MAXCOUNT; i++){
+        i2cavail = IsI2CDeviceAvailable(MCP23017_ADDRESSES[i]);
+        if(i2cavail){
+
+            MCP23017_AVAILABLE[MCP_COUNT] = MCP23017_ADDRESSES[i];
+            MCP_COUNT++;
+            Serial.print("Available: ");
+            Serial.print(i);
+            Serial.print(": ");
+            Serial.println(MCP23017_ADDRESSES[i],HEX);
+        }
+    
+   }
+
+
+
+
+    Wire.setPins(I2C_SDA, I2C_SCL);
+    Wire.begin();
+
+    #if USE_JOYSTICK
+        
+    #endif
+           // MCP23017_AVAILABLE[MCP_COUNT] = MCP23017_ADDRESSES[i];
+            
+    #if USE_MCP23017
+        for (int X = 0; X < MCP_COUNT;X++){
+            int BP=0;
+            mcp[X].begin_I2C(MCP23017_AVAILABLE[X]);
+            for(BP=0; BP < 16; BP++){
+                mcp[X].pinMode(BP, INPUT_PULLUP);
+                RealButtonCount++;
+            }
+        }
+    #endif
+
+    #if USE_ADS1115
+        if(!adc.init()){
+            Serial.println("ADS1115 not connected!");
+            
+        }else{
+            adc.setVoltageRange_mV(ADS1115_RANGE_6144); 
+            adc.setCompareChannels(ADS1115_COMP_0_GND);
+            adc.setMeasureMode(ADS1115_CONTINUOUS);
+            Serial.println("ADS1115 ready!");         
+
+        }
+    #endif
+
+    #if USE_VL53L0X
+        if (!lox.begin()) {
+            Serial.println(F("Failed to boot VL53L0X"));
+        }else{ 
+            Serial.println(F("VL53L0X ready"));
+            // task generation bla bla
+
+        }    
+    #endif
+
+
+
+
+
+
 
 
 }
-
-
-
-
-
-
-
-
 
 void loop(){
-//    uint16_t Mess = tof_getrange();
-//    Serial.println(Mess);
-//    ads_read();
-  mcp23017_loop();
-    delay (1000);
-}
+    Serial.println(PROJECTNAME);
+#if USE_VL53L0X
+    Serial.println(tof_getrange());
+#endif
+#if USE_ADS1115   
+    Serial.print("ADS: ");
+    Serial.print(readChannelRaw(0));
+    Serial.print(" ");
+    Serial.print(readChannelRaw(1));
+    Serial.print(" ");
+    Serial.print(readChannelRaw(2));
+    Serial.print(" ");
+    Serial.println(readChannelRaw(3));
+    Serial.print(" ");
+#endif
+#if USE_MCP23017
+    getMCPData();
+    PrintButtons();
+#endif
 
+    delay(1000);
+
+}

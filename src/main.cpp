@@ -42,7 +42,32 @@ void setup(){
     Wire.begin();
 
     #if USE_JOYSTICK
-        
+        Joystick.setXAxisRange(0, 65535);
+        Joystick.setYAxisRange(0, 65535);
+        Joystick.setZAxisRange(0, 65535);
+        Joystick.setRxAxisRange(0, 65535);
+        Joystick.setRyAxisRange(0, 65535);
+        Joystick.setRzAxisRange(0, 65535);
+        Joystick.setThrottleRange(0, 65535);
+        Joystick.setRudderRange(0, 65535);
+        Joystick.setAcceleratorRange(0,65535);
+        Joystick.setSteeringRange(0,65535);
+        Joystick.setBrakeRange(0,65535);
+        Joystick.begin(false); // no auto send
+        Serial.println("joystick started");
+        int mstep;
+        delay(50);
+        for(mstep =0; mstep < NUM_BUTTONS; mstep++){
+          myjoy_buttons[mstep] = 0;
+        }
+
+        for(mstep =0; mstep < NUM_HATS; mstep++){
+          myjoy_hats[mstep] = -1;
+        }
+        for(mstep =0; mstep < NUM_AXIS; mstep++){
+          myjoy_axis[mstep] = 12345;
+        }
+
     #endif
            // MCP23017_AVAILABLE[MCP_COUNT] = MCP23017_ADDRESSES[i];
             
@@ -109,7 +134,9 @@ void loop(){
     getMCPData();
     PrintButtons();
 #endif
-
-    delay(1000);
+#if USE_JOYSTICK
+    JoyStickCall();
+#endif
+    delay(10);
 
 }

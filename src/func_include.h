@@ -31,9 +31,22 @@ int16_t readChannelRaw(int channel) {
     rawresult = adc.getRawResult(); // alternative: getResult_mV for Millivolt
     if(rawresult < AIN_MIN) rawresult = AIN_MIN;
     if(rawresult > AIN_MAX) rawresult = AIN_MAX;
-
     return rawresult;
 }
+void getADSData(){
+    int16_t retdata[4];
+    for(int i =0; i < 4 ; i++){
+        retdata[i] = readChannelRaw(i);
+    }
+    for(int i =0; i < 4 ; i++){
+        myjoy_axis[i] = retdata[i];
+    }    
+
+}
+
+
+
+
 #endif
 
 
@@ -43,15 +56,21 @@ int16_t readChannelRaw(int channel) {
 */
 void getMCPData(){
 //myjoy_buttons
+uint8_t buttontmp[NUM_BUTTONS];
         int BTNC = 0;
         for (int X = 0; X < MCP_COUNT;X++){
             int BP=0;
             mcp[X].begin_I2C(MCP23017_AVAILABLE[X]);
             for(BP=0; BP < 16; BP++){
-                myjoy_buttons[BTNC] = !mcp[X].digitalRead(BP);
+                buttontmp[BTNC] = !mcp[X].digitalRead(BP);
                 BTNC++;
             }
         }
+        for (int Y=0; Y < BTNC ;Y++){
+            myjoy_buttons[Y] = buttontmp[Y];
+        }
+
+
 
 }
 #endif
@@ -81,3 +100,33 @@ void PrintButtons(){
     }
     Serial.println();
 }
+
+
+#if USE_JOYSTICK
+void JoyStickCall(){
+    int mstep;
+        for(mstep =0; mstep < NUM_BUTTONS; mstep++){
+          Joystick.setButton(mstep, myjoy_buttons[mstep]);
+        }
+
+        for(mstep =0; mstep < NUM_HATS; mstep++){
+          Joystick.setHatSwitch(mstep, myjoy_hats[mstep]);
+        }
+
+        
+        Joystick.setXAxis(myjoy_axis[1]);
+        Joystick.setYAxis(myjoy_axis[2]);
+        Joystick.setZAxis(myjoy_axis[3]);
+        Joystick.setRxAxis(myjoy_axis[4]);
+        Joystick.setRyAxis(myjoy_axis[5]);
+        Joystick.setRzAxis(myjoy_axis[6]);
+        Joystick.setThrottle(myjoy_axis[0]);
+		
+        Joystick.setAccelerator(myjoy_axis[0]);
+        
+        Joystick.setBrake(myjoy_axis[0]);
+        Joystick.setSteering(myjoy_axis[0]);
+        Joystick.setRudder(myjoy_axis[0]);
+        Joystick.sendState();
+}
+#endif

@@ -34,8 +34,19 @@ void setup(){
         }
     
    }
+    
+   for(int i=0; i <ADS1115_MAXCOUNT; i++){
+        i2cavail = IsI2CDeviceAvailable(ADS1115_ADDRESSES[i]);
+        if(i2cavail){
 
-
+            ADS1115_AVAILABLE[ADS_COUNT] = ADS1115_ADDRESSES[i];
+            ADS_COUNT++;
+            Serial.print("Available: ");
+            Serial.print(i);
+            Serial.print(": ");
+            Serial.println(ADS1115_ADDRESSES[i],HEX);
+        }   
+   }
 
 
     Wire.setPins(I2C_SDA, I2C_SCL);

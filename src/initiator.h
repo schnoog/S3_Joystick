@@ -22,7 +22,9 @@
 #endif
 
 uint8_t MCP23017_AVAILABLE[MCP23017_MAXCOUNT];
+uint8_t ADS1115_AVAILABLE[ADS1115_MAXCOUNT];
 int MCP_COUNT = 0;
+int ADS_COUNT = 0;
 int RealButtonCount = 0;
 uint8_t myjoy_buttons[NUM_BUTTONS];
 int16_t  myjoy_hats[NUM_HATS];

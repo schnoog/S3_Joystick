@@ -13,7 +13,8 @@
 #endif
 
 #if USE_ADS1115
-    ADS1115_WE adc = ADS1115_WE(ADS1115_I2C_ADDRESS);
+    ADS1115_WE adc[ADS1115_MAXCOUNT];
+    //ADS1115_WE adc = ADS1115_WE(ADS1115_I2C_ADDRESS);
 #endif
 
 #if USE_VL53L0X
@@ -28,6 +29,6 @@ int ADS_COUNT = 0;
 int RealButtonCount = 0;
 uint8_t myjoy_buttons[NUM_BUTTONS];
 int16_t  myjoy_hats[NUM_HATS];
-uint32_t myjoy_axis[NUM_AXIS];
+uint32_t myjoy_axis[16];  //max of 4 ads1115
 
 

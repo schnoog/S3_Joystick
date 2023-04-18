@@ -20,25 +20,36 @@ uint16_t tof_getrange() {
 *
 */
 #if USE_ADS1115
-int16_t readChannelRaw(int channel) {
+int16_t readChannelRaw(int channel, int SelectedADC) {
     int16_t rawresult = 0;
     ADS1115_MUX mimux;
     if(channel == 0) mimux = ADS1115_COMP_0_GND;  
     if(channel == 1) mimux = ADS1115_COMP_1_GND; 
     if(channel == 2) mimux = ADS1115_COMP_2_GND; 
     if(channel == 3) mimux = ADS1115_COMP_3_GND; 
-    adc.setCompareChannels(mimux);
-    rawresult = adc.getRawResult(); // alternative: getResult_mV for Millivolt
+    adc[SelectedADC].setCompareChannels(mimux);
+    rawresult = adc[SelectedADC].getRawResult(); // alternative: getResult_mV for Millivolt
     if(rawresult < AIN_MIN) rawresult = AIN_MIN;
     if(rawresult > AIN_MAX) rawresult = AIN_MAX;
     return rawresult;
 }
 void getADSData(){
-    int16_t retdata[4];
+    int16_t retdata[16];
+    int AIndex = 0;
+    int X;
+    for(X=0; X < ADS_COUNT ; X++){
     for(int i =0; i < 4 ; i++){
-        retdata[i] = readChannelRaw(i);
+        AIndex = X * 4;
+        AIndex += i;
+        retdata[AIndex] = readChannelRaw(i,X);
     }
-    for(int i =0; i < 4 ; i++){
+
+
+    }
+
+
+
+    for(int i =0; i < 16 ; i++){
         myjoy_axis[i] = retdata[i];
     }    
 

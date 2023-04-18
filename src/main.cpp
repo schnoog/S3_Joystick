@@ -20,6 +20,7 @@ void setup(){
     /*
     * Check 4 MCP I2C Adds
     */
+   #if USE_I2C
    bool i2cavail = false;
    for(int i=0; i <MCP23017_MAXCOUNT; i++){
         i2cavail = IsI2CDeviceAvailable(MCP23017_ADDRESSES[i]);
@@ -51,7 +52,7 @@ void setup(){
 
     Wire.setPins(I2C_SDA, I2C_SCL);
     Wire.begin();
-
+    #endif
     #if USE_JOYSTICK
         Joystick.setXAxisRange(0, 65535);
         Joystick.setYAxisRange(0, 65535);
@@ -94,16 +95,25 @@ void setup(){
     #endif
 
     #if USE_ADS1115
-        if(!adc.init()){
-            Serial.println("ADS1115 not connected!");
-            
-        }else{
-            adc.setVoltageRange_mV(ADS1115_RANGE_6144); 
-            adc.setCompareChannels(ADS1115_COMP_0_GND);
-            adc.setMeasureMode(ADS1115_CONTINUOUS);
-            Serial.println("ADS1115 ready!");         
+            for (int X = 0; X < ADS_COUNT;X++){
+              adc[X] = ADS1115_WE(MCP23017_AVAILABLE[X]);  
+                if(!adc[X].init()){
+                    Serial.println("ADS1115 not connected!");
+                    
+                }else{
+                    adc[X].setVoltageRange_mV(ADS1115_RANGE_6144); 
+                    adc[X].setCompareChannels(ADS1115_COMP_0_GND);
+                    adc[X].setMeasureMode(ADS1115_CONTINUOUS);
+                    Serial.println("ADS1115 ready!");         
 
-        }
+                }
+
+
+            }
+
+
+
+
     #endif
 
     #if USE_VL53L0X
@@ -132,13 +142,13 @@ void loop(){
 #endif
 #if USE_ADS1115   
     Serial.print("ADS: ");
-    Serial.print(readChannelRaw(0));
+  //  Serial.print(readChannelRaw(0,0));
     Serial.print(" ");
-    Serial.print(readChannelRaw(1));
+//    Serial.print(readChannelRaw(1,0));
     Serial.print(" ");
-    Serial.print(readChannelRaw(2));
+//    Serial.print(readChannelRaw(2,0));
     Serial.print(" ");
-    Serial.println(readChannelRaw(3));
+//    Serial.println(readChannelRaw(3,0));
     Serial.print(" ");
 #endif
 #if USE_MCP23017

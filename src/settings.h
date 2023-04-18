@@ -10,13 +10,14 @@
 
 
 
-#define I2C_SDA 36
-#define I2C_SCL 37
+#define I2C_SDA 13
+#define I2C_SCL 14
 #define USE_MUTEX
 
 #define USE_JOYSTICK true
+#define USE_I2C true
 #define USE_ADS1115 true
-#define USE_MCP23017 true
+#define USE_MCP23017 false
 #define MCP23017_MAXCOUNT 8
 #define ADS1115_MAXCOUNT 4
 #define USE_VL53L0X true

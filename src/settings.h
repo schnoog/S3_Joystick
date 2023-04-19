@@ -37,8 +37,8 @@ uint8_t ADS1115_ADDRESSES[ADS1115_MAXCOUNT] = {0x48 , 0x49, 0x4a, 0x4b };
 
 
 SemaphoreHandle_t xMutex = NULL;  // Create a mutex object
-
-
+SemaphoreHandle_t xMutexJS = NULL;  // Create a mutex object
+SemaphoreHandle_t xMutexI2C = NULL;  // Create a mutex object
 
 
 

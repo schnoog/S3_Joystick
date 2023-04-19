@@ -27,36 +27,15 @@ int16_t readChannelRaw(int channel, int SelectedADC) {
     if(channel == 1)cmux = ADS1115_COMP_1_GND;
     if(channel == 2)cmux = ADS1115_COMP_2_GND;
     if(channel == 3)cmux = ADS1115_COMP_3_GND;
-
-    adc[SelectedADC].setCompareChannels(cmux);
-
-    rawresult = adc[SelectedADC].getRawResult(); // alternative: getResult_mV for Millivolt
+    if (xSemaphoreTake (xMutexI2C, portMAX_DELAY)) {  // take the mutex
+        adc[SelectedADC].setCompareChannels(cmux);
+        rawresult = adc[SelectedADC].getRawResult(); // alternative: getResult_mV for Millivolt
+        xSemaphoreGive (xMutexI2C);  // release the mutex
+    }
     //Serial.println(rawresult);
     //if(rawresult < AIN_MIN) rawresult = AIN_MIN;
     //if(rawresult > AIN_MAX) rawresult = AIN_MAX;
     return rawresult;
-}
-
-void getADSData(){
-    int16_t retdata[16];
-    int AIndex = 0;
-    int X;
-    for(X=0; X < ADS_COUNT ; X++){
-    for(int i =0; i < 4 ; i++){
-        AIndex = X * 4;
-        AIndex += i;
-        retdata[AIndex] = readChannelRaw(i,X);
-    }
-
-
-    }
-
-
-
-    for(int i =0; i < 16 ; i++){
-        myjoy_axis[i] = retdata[i];
-    }    
-
 }
 
 
@@ -128,20 +107,22 @@ void JoyStickCall(){
           Joystick.setHatSwitch(mstep, myjoy_hats[mstep]);
         }
 
-        
-        Joystick.setXAxis(myjoy_axis[1]);
-        Joystick.setYAxis(myjoy_axis[2]);
-        Joystick.setZAxis(myjoy_axis[3]);
-        Joystick.setRxAxis(myjoy_axis[4]);
-        Joystick.setRyAxis(myjoy_axis[5]);
-        Joystick.setRzAxis(myjoy_axis[6]);
-        Joystick.setThrottle(myjoy_axis[0]);
-		
-        Joystick.setAccelerator(myjoy_axis[0]);
-        
-        Joystick.setBrake(myjoy_axis[0]);
-        Joystick.setSteering(myjoy_axis[0]);
-        Joystick.setRudder(myjoy_axis[0]);
+        if (xSemaphoreTake (xMutex, portMAX_DELAY)) {  // take the mutex
+            Joystick.setXAxis(myjoy_axis[1]);
+            Joystick.setYAxis(myjoy_axis[2]);
+            Joystick.setZAxis(myjoy_axis[3]);
+            Joystick.setRxAxis(myjoy_axis[4]);
+            Joystick.setRyAxis(myjoy_axis[5]);
+            Joystick.setRzAxis(myjoy_axis[6]);
+            Joystick.setThrottle(myjoy_axis[0]);
+            xSemaphoreGive (xMutex);  // release the mutex
+
+            Joystick.setAccelerator(myjoy_axis[0]);        
+            Joystick.setBrake(myjoy_axis[0]);
+            Joystick.setSteering(myjoy_axis[0]);
+            Joystick.setRudder(myjoy_axis[0]);
+        }    
+
         Joystick.sendState();
 }
 #endif

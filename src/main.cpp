@@ -2,14 +2,16 @@
 #include "settings.h"
 #include "includer.h"
 #include "initiator.h"
-
-
 #include "func_include.h"
-
+#include "tasking_ads.h"
+#include "tasking_joystick.h"
 
 
 void setup(){
     Serial.begin(115200);
+    xMutex = xSemaphoreCreateMutex();
+    xMutexJS = xSemaphoreCreateMutex();
+    xMutexI2C = xSemaphoreCreateMutex();
     int WF = 0;
     int PreWait = 5;
     Serial.println("Waiting");
@@ -112,7 +114,7 @@ void setup(){
                     adc[X].setMeasureMode(ADS1115_CONTINUOUS);
                     
                     Serial.println("ADS1115 ready!");         
-
+                    //RunTask_ADSLoop();
                 }
 
 
@@ -123,7 +125,7 @@ void setup(){
 
     #endif
 
-    #if USE_VL53L0X
+    #if USE_VL53L0Xs
         if (!lox.begin()) {
             Serial.println(F("Failed to boot VL53L0X"));
         }else{ 
@@ -135,8 +137,12 @@ void setup(){
 
 
 
-
-
+#if USE_ADS1115
+    RunTask_ADSLoop();
+#endif
+#if USE_JOYSTICK
+    RunTask_JoystickLoop();
+#endif
 
 
 
@@ -144,10 +150,10 @@ void setup(){
 
 void loop(){
     Serial.println(PROJECTNAME);
-#if USE_VL53L0X
+#if USE_VL53L0Xx
     Serial.println(tof_getrange());
 #endif
-#if USE_ADS1115   
+#if USE_ADS1115XX   
     Serial.print("ADS: ");
     Serial.print(readChannelRaw(0,0));
     Serial.print(" ");
@@ -158,12 +164,12 @@ void loop(){
     Serial.println(readChannelRaw(3,0));
     Serial.print(" ");
 #endif
-#if USE_MCP23017
+#if USE_MCP23017x
     getMCPData();
     PrintButtons();
 #endif
 #if USE_JOYSTICK
-    JoyStickCall();
+   // JoyStickCall();
 #endif
     delay(500);
 

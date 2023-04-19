@@ -4,7 +4,7 @@
 
 #if USE_JOYSTICK
     // Create Joystick
-    Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_MULTI_AXIS, 128, 2,
+    Joystick_ Joystick(0x03, JOYSTICK_TYPE_JOYSTICK, 128, 2,
     true, true, true, true, true, true, true, true, true, true, true);
 #endif
 
@@ -13,6 +13,8 @@
 #endif
 
 #if USE_ADS1115
+//    Adafruit_ADS1115 adc[ADS1115_MAXCOUNT];
+    //ADS1115 adc[ADS1115_MAXCOUNT];
     ADS1115_WE adc[ADS1115_MAXCOUNT];
     //ADS1115_WE adc = ADS1115_WE(ADS1115_I2C_ADDRESS);
 #endif

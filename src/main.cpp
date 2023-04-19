@@ -46,11 +46,15 @@ void setup(){
             Serial.print(i);
             Serial.print(": ");
             Serial.println(ADS1115_ADDRESSES[i],HEX);
+        }else{
+            Serial.print(ADS1115_ADDRESSES[i],HEX);
+            Serial.println(" not available");
         }   
    }
 
 
-    Wire.setPins(I2C_SDA, I2C_SCL);
+    //Wire.setPins(I2C_SDA, I2C_SCL);
+    Wire.setClock(20000);
     Wire.begin();
     #endif
     #if USE_JOYSTICK
@@ -96,14 +100,17 @@ void setup(){
 
     #if USE_ADS1115
             for (int X = 0; X < ADS_COUNT;X++){
-              adc[X] = ADS1115_WE(MCP23017_AVAILABLE[X]);  
-                if(!adc[X].init()){
+                adc[X] = ADS1115_WE(ADS1115_AVAILABLE[X]);
+                Serial.print(ADS_COUNT);
+                Serial.println(" ads 1115 available");
+                if(!adc[X].init(  )){
                     Serial.println("ADS1115 not connected!");
                     
                 }else{
-                    adc[X].setVoltageRange_mV(ADS1115_RANGE_6144); 
                     adc[X].setCompareChannels(ADS1115_COMP_0_GND);
+                    adc[X].setVoltageRange_mV(ADS1115_RANGE_4096);
                     adc[X].setMeasureMode(ADS1115_CONTINUOUS);
+                    
                     Serial.println("ADS1115 ready!");         
 
                 }
@@ -142,13 +149,13 @@ void loop(){
 #endif
 #if USE_ADS1115   
     Serial.print("ADS: ");
-  //  Serial.print(readChannelRaw(0,0));
+    Serial.print(readChannelRaw(0,0));
     Serial.print(" ");
-//    Serial.print(readChannelRaw(1,0));
+    Serial.print(readChannelRaw(1,0));
     Serial.print(" ");
-//    Serial.print(readChannelRaw(2,0));
+    Serial.print(readChannelRaw(2,0));
     Serial.print(" ");
-//    Serial.println(readChannelRaw(3,0));
+    Serial.println(readChannelRaw(3,0));
     Serial.print(" ");
 #endif
 #if USE_MCP23017
@@ -158,6 +165,6 @@ void loop(){
 #if USE_JOYSTICK
     JoyStickCall();
 #endif
-    delay(10);
+    delay(500);
 
 }

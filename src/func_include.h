@@ -22,17 +22,21 @@ uint16_t tof_getrange() {
 #if USE_ADS1115
 int16_t readChannelRaw(int channel, int SelectedADC) {
     int16_t rawresult = 0;
-    ADS1115_MUX mimux;
-    if(channel == 0) mimux = ADS1115_COMP_0_GND;  
-    if(channel == 1) mimux = ADS1115_COMP_1_GND; 
-    if(channel == 2) mimux = ADS1115_COMP_2_GND; 
-    if(channel == 3) mimux = ADS1115_COMP_3_GND; 
-    adc[SelectedADC].setCompareChannels(mimux);
+    ADS1115_MUX cmux;
+    if(channel == 0)cmux = ADS1115_COMP_0_GND;
+    if(channel == 1)cmux = ADS1115_COMP_1_GND;
+    if(channel == 2)cmux = ADS1115_COMP_2_GND;
+    if(channel == 3)cmux = ADS1115_COMP_3_GND;
+
+    adc[SelectedADC].setCompareChannels(cmux);
+
     rawresult = adc[SelectedADC].getRawResult(); // alternative: getResult_mV for Millivolt
-    if(rawresult < AIN_MIN) rawresult = AIN_MIN;
-    if(rawresult > AIN_MAX) rawresult = AIN_MAX;
+    //Serial.println(rawresult);
+    //if(rawresult < AIN_MIN) rawresult = AIN_MIN;
+    //if(rawresult > AIN_MAX) rawresult = AIN_MAX;
     return rawresult;
 }
+
 void getADSData(){
     int16_t retdata[16];
     int AIndex = 0;
@@ -92,7 +96,7 @@ uint8_t buttontmp[NUM_BUTTONS];
 bool IsI2CDeviceAvailable(uint8_t i2c_addr){
   bool error = true;
   bool addressFound = false;
-    Wire.setPins(I2C_SDA, I2C_SCL);
+    //Wire.setPins(I2C_SDA, I2C_SCL);
     Wire.begin();
     delay(100);    
     Wire.beginTransmission(i2c_addr);

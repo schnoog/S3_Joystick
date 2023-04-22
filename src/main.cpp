@@ -5,6 +5,8 @@
 #include "func_include.h"
 #include "tasking_ads.h"
 #include "tasking_joystick.h"
+#include "tasking_mcp.h"
+#include "tasking_tof.h"
 
 
 void setup(){
@@ -23,6 +25,9 @@ void setup(){
     * Check 4 MCP I2C Adds
     */
    #if USE_I2C
+
+    Wire.setPins(I2C_SDA, I2C_SCL);
+
    bool i2cavail = false;
    for(int i=0; i <MCP23017_MAXCOUNT; i++){
         i2cavail = IsI2CDeviceAvailable(MCP23017_ADDRESSES[i]);
@@ -55,9 +60,10 @@ void setup(){
    }
 
 
-    //Wire.setPins(I2C_SDA, I2C_SCL);
-    Wire.setClock(20000);
+    
+    
     Wire.begin();
+    //Wire.setClock(20000);
     #endif
     #if USE_JOYSTICK
         Joystick.setXAxisRange(0, 65535);
@@ -102,16 +108,19 @@ void setup(){
 
     #if USE_ADS1115
             for (int X = 0; X < ADS_COUNT;X++){
-                adc[X] = ADS1115_WE(ADS1115_AVAILABLE[X]);
+                ////adc[X] = ADS1115_WE(ADS1115_AVAILABLE[X]);
+                
                 Serial.print(ADS_COUNT);
                 Serial.println(" ads 1115 available");
-                if(!adc[X].init(  )){
+                ////if(!adc[X].init(  )){
+                adc[X].setGain(GAIN_ONE);
+                if(!adc[X].begin( ADS1115_AVAILABLE[X] )){
                     Serial.println("ADS1115 not connected!");
                     
                 }else{
-                    adc[X].setCompareChannels(ADS1115_COMP_0_GND);
-                    adc[X].setVoltageRange_mV(ADS1115_RANGE_4096);
-                    adc[X].setMeasureMode(ADS1115_CONTINUOUS);
+////                    adc[X].setCompareChannels(ADS1115_COMP_0_GND);
+////                    adc[X].setVoltageRange_mV(ADS1115_RANGE_4096);
+////                    adc[X].setMeasureMode(ADS1115_CONTINUOUS);
                     
                     Serial.println("ADS1115 ready!");         
                     //RunTask_ADSLoop();
@@ -125,11 +134,16 @@ void setup(){
 
     #endif
 
-    #if USE_VL53L0Xs
+    #if USE_VL53L0X
         if (!lox.begin()) {
             Serial.println(F("Failed to boot VL53L0X"));
+
+            
+            
         }else{ 
             Serial.println(F("VL53L0X ready"));
+            lox.setMeasurementTimingBudgetMicroSeconds(200000);
+            lox.startRangeContinuous();
             // task generation bla bla
 
         }    
@@ -140,37 +154,25 @@ void setup(){
 #if USE_ADS1115
     RunTask_ADSLoop();
 #endif
+
+#if USE_MCP23017
+    RunTask_MCPLoop();
+#endif
+#if USE_VL53L0X
+    RunTask_TOFLoop();
+#endif
 #if USE_JOYSTICK
     RunTask_JoystickLoop();
 #endif
 
 
-
 }
 
 void loop(){
-    Serial.println(PROJECTNAME);
+    //Serial.println(PROJECTNAME);
 #if USE_VL53L0Xx
     Serial.println(tof_getrange());
 #endif
-#if USE_ADS1115XX   
-    Serial.print("ADS: ");
-    Serial.print(readChannelRaw(0,0));
-    Serial.print(" ");
-    Serial.print(readChannelRaw(1,0));
-    Serial.print(" ");
-    Serial.print(readChannelRaw(2,0));
-    Serial.print(" ");
-    Serial.println(readChannelRaw(3,0));
-    Serial.print(" ");
-#endif
-#if USE_MCP23017x
-    getMCPData();
-    PrintButtons();
-#endif
-#if USE_JOYSTICK
-   // JoyStickCall();
-#endif
-    delay(500);
+   // delay(5);
 
 }

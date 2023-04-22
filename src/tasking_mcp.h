@@ -6,56 +6,53 @@
 #include <esp_heap_caps.h>
 
 
-    static int task_number0 = 0;
+    static int task_number2 = 0;
     //static int task_number1 = 0;
 
 //  xTaskCreate (task_tofsensor,"Time of flight sensor task",1000,(void*)&task_number0,1,NULL);
 
 
-void ADSLoop (void* pvParameters) {
-    int16_t ANALOGDATA[16];
+void MCPLoop (void* pvParameters) {
+    uint8_t buttontmp[NUM_BUTTONS];
     int I;
     int Z;
+    int Y=0;
+    int X = 0;
     int cnt = 0;
-    esp_task_wdt_init(5, false);
+    int BTNC = 0;
+    int BP = 0;
+    esp_task_wdt_init(10, false);
     esp_task_wdt_add(NULL); 
+
   while (1) {
     //myjoy_axis
  
-    cnt = 0;
-    vTaskDelay(1);
+        BTNC = 0;
 
-
-    for (I = 0; I < ADS_COUNT;I++){
-        for(Z=0; Z < 4 ; Z++){
-////            ANALOGDATA[cnt] = readChannelRaw(Z,I);
-                    ANALOGDATA[cnt] = adc[I].readADC_SingleEnded(Z);
-                    
-            cnt++;
-        }
-        
-    }
-  vTaskDelay(1);
-
-    cnt = 0;
-    if (xSemaphoreTake (xMutex, portMAX_DELAY)) {  // take the mutex  
-        ADSCycle++; 
-        for (I = 0; I < ADS_COUNT;I++){
-            for(Z=0; Z < 4 ; Z++){
-                myjoy_axis[cnt] = ANALOGDATA[cnt];
-                cnt++;
+        for (X = 0; X < MCP_COUNT;X++){
+            BP=0;
+            for(BP=0; BP < 16; BP++){
+                buttontmp[BTNC] = !mcp[X].digitalRead(BP);
+                BTNC++;
             }
-            
+        }
+
+
+      if (xSemaphoreTake (xMutex, portMAX_DELAY)) {  // take the mutex
+      MCPCycle++;    
+        for (Y=0; Y < BTNC ;Y++){
+            myjoy_buttons[Y] = buttontmp[Y];
         }
       xSemaphoreGive (xMutex);  // release the mutex
-    }
+      }
+
     esp_task_wdt_reset();
     vTaskDelay(5);    
   }
 }
 
 
-void RunTask_ADSLoop(){
+void RunTask_MCPLoop(){
   /*
   xTaskCreatePinnedToCore (
     ADSLoop,     // Function to implement the task
@@ -67,6 +64,6 @@ void RunTask_ADSLoop(){
     0          // Core where the task should run
   );
 */
-xTaskCreate (ADSLoop,"Reads all available ADS1115 ADC",20000,(void*)&task_number0,2,NULL);
+xTaskCreate (MCPLoop,"Reads all available MCP23017 IOs",20000,(void*)&task_number2,2,NULL);
 
 }

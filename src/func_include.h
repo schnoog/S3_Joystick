@@ -19,7 +19,7 @@ uint16_t tof_getrange() {
 /*
 *
 */
-#if USE_ADS1115
+#if USE_ADS1115X
 int16_t readChannelRaw(int channel, int SelectedADC) {
     int16_t rawresult = 0;
     ADS1115_MUX cmux;

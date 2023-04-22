@@ -15,6 +15,13 @@
 void JoystickLoop (void* pvParameters) {
   int mstep;
   int i;
+  int updated=0;
+  long outputtrigger = 0;
+  int AC= 0;
+  int MC = 0;
+  int TC =0;
+  long lastrun = millis();
+  int printafter = 200;
     esp_task_wdt_init(5, false);
     esp_task_wdt_add(NULL); 
   while (1) {
@@ -26,7 +33,7 @@ void JoystickLoop (void* pvParameters) {
           for(mstep =0; mstep < NUM_HATS; mstep++){
             Joystick.setHatSwitch(mstep, myjoy_hats[mstep]);
           }
-
+      outputtrigger++;
       Joystick.setXAxis(myjoy_axis[1]);
       Joystick.setYAxis(myjoy_axis[2]);
       Joystick.setZAxis(myjoy_axis[3]);
@@ -41,15 +48,42 @@ void JoystickLoop (void* pvParameters) {
       Joystick.setSteering(myjoy_axis[0]);
       Joystick.setRudder(myjoy_axis[0]);
       Joystick.sendState();
+      updated++;
+
+
+
       xSemaphoreGive (xMutex);  // release the mutex
 
 
-      Serial.print("Axis: ");
-      for(i=0;i<16;i++){
-      Serial.print(myjoy_axis[i]);
-      Serial.print(" / ");
+      if(outputtrigger > printafter -1){
+        if (xSemaphoreTake (xMutex, portMAX_DELAY)) {  // take the mutex    
+              TC = TOFCycle;
+              TOFCycle=0;
+              MC = MCPCycle;
+              MCPCycle =0;
+              AC = ADSCycle;
+              ADSCycle = 0;
+        xSemaphoreGive (xMutex);  // release the mutex
+        }
+          Serial.print(printafter);
+          Serial.print(" joystick cycles - j/mcp/ads/tof ");
+          Serial.print(updated);Serial.print("/");Serial.print(MC);Serial.print("/");
+          Serial.print(AC);Serial.print("/");Serial.print(TC);          
+          Serial.print(" Joystick updates in (ms): ");
+          Serial.println( (millis()-lastrun) );
+          for(i=0;i<17;i++){
+          Serial.print(myjoy_axis[i]);
+          Serial.print(" / ");
+          }
+          Serial.println("");
+          for(i=0; i < RealButtonCount; i++){
+            Serial.print(myjoy_buttons[i]);
+          }
+          Serial.println("");
+          outputtrigger = 0;
+          updated = 0;
+          lastrun = millis();
       }
-      Serial.println("");
       esp_task_wdt_reset();
       vTaskDelay(5);
 

@@ -10,8 +10,8 @@
 
 
 
-//#define I2C_SDA 12
-//#define I2C_SCL 11
+#define I2C_SDA 11
+#define I2C_SCL 12
 #define USE_MUTEX
 
 #define USE_JOYSTICK true

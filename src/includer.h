@@ -14,8 +14,8 @@
 #endif
 
 #if USE_ADS1115
-    #include <ADS1115_WE.h>
-    //#include <Adafruit_ADS1X15.h>
+    ////#include <ADS1115_WE.h>
+    #include <Adafruit_ADS1X15.h>
     //#include <ADS1X15.h>
 #endif
 

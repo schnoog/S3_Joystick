@@ -4,9 +4,6 @@
 [submodule "lib/Adafruit_VL53L0X"]
 	path = lib/Adafruit_VL53L0X
 	url = https://github.com/adafruit/Adafruit_VL53L0X.git
-[submodule "lib/ADS1115_WE"]
-	path = lib/ADS1115_WE
-	url = https://github.com/wollewald/ADS1115_WE.git
 [submodule "lib/Adafruit-MCP23017-Arduino-Library"]
 	path = lib/Adafruit-MCP23017-Arduino-Library
 	url = https://github.com/adafruit/Adafruit-MCP23017-Arduino-Library.git
@@ -16,6 +13,3 @@
 [submodule "lib/Adafruit_ADS1X15"]
 	path = lib/Adafruit_ADS1X15
 	url = git@github.com:adafruit/Adafruit_ADS1X15.git
-[submodule "lib/ADS1X15"]
-	path = lib/ADS1X15
-	url = git@github.com:RobTillaart/ADS1X15.git

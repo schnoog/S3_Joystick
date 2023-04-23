@@ -40,4 +40,11 @@ int ADSCycle = 0;
 int TOFCycle = 0;
 
 
+static int task_number0 = 0; // ADS1115
+static int task_number1 = 0; // Joystick
+static int task_number2 = 0; // MCP23017
+static int task_number3 = 0; // VL53 TOF
+static int task_number4 = 0;
+static int task_number5 = 0;
+
 

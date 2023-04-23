@@ -1,26 +1,29 @@
 #pragma once
 
-
+/*  PROJECT SETTINGS */
 #define PROJECTNAME "My Super joystick project"
+#define USE_I2C true
+#define USE_ADS1115 true
+#define USE_MCP23017 true
+#define USE_VL53L0X true
+#define USE_JOYSTICK true
 #define NUM_BUTTONS 128
 #define NUM_AXIS 7
 #define NUM_HATS 2
 
-
-
-
-
+/*  BOARD SETTINGS */
 #define I2C_SDA 11
 #define I2C_SCL 12
+
+
+/*  OTHER SETTINGS */
 #define USE_MUTEX
 
-#define USE_JOYSTICK true
-#define USE_I2C true
-#define USE_ADS1115 true
-#define USE_MCP23017 true
+
+
+
 #define MCP23017_MAXCOUNT 8
 #define ADS1115_MAXCOUNT 4
-#define USE_VL53L0X true
 
 
 int16_t AIN_MIN = 0;

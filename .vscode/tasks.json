@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "PlatformIO",
+			"task": "Upload (lolin_s3)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Upload (lolin_s3)"
+		},
+		{
+			"type": "PlatformIO",
+			"task": "Uploads without building (lolin_s3)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Uploads without building (lolin_s3)"
+		},
+		{
+			"type": "PlatformIO",
+			"task": "Build",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"group": "build",
+			"label": "PlatformIO: Build"
+		}
+	]
+}

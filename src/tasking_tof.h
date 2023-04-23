@@ -1,3 +1,4 @@
+#pragma once
 #include <Arduino.h>
 #include "settings.h"
 #include "initiator.h"
@@ -6,17 +7,20 @@
 #include <esp_heap_caps.h>
 
 
-    static int task_number3 = 0;
-    //static int task_number1 = 0;
-
-//  xTaskCreate (task_tofsensor,"Time of flight sensor task",1000,(void*)&task_number0,1,NULL);
-
-
 void TOFLoop (void* pvParameters) {
     uint16_t ANALOGDATA;
     int I;
     int Z;
     int cnt = 0;
+    /* initiate the VL53 */
+        if (!lox.begin()) {
+            Serial.println(F("Failed to boot VL53L0X"));
+        }else{ 
+            Serial.println(F("VL53L0X ready"));
+            lox.setMeasurementTimingBudgetMicroSeconds(200000);
+            lox.startRangeContinuous();
+        }
+    /* tof sensor initiated, let's the game begin*/
     esp_task_wdt_init(5, false);
     esp_task_wdt_add(NULL); 
   while (1) {
@@ -42,17 +46,5 @@ void TOFLoop (void* pvParameters) {
 
 
 void RunTask_TOFLoop(){
-  /*
-  xTaskCreatePinnedToCore (
-    ADSLoop,     // Function to implement the task
-    "Reading out the connected ADS1115 devices",   // Name of the task
-    20000,      // Stack size in words
-    NULL,      // Task input parameter
-    10,         // Priority of the task
-    NULL,      // Task handle.
-    0          // Core where the task should run
-  );
-*/
-xTaskCreate (TOFLoop,"Read the VL53 time of flight sensor",20000,(void*)&task_number3,10,NULL);
-
+  xTaskCreate (TOFLoop,"Read the VL53 time of flight sensor",20000,(void*)&task_number3,10,NULL);
 }

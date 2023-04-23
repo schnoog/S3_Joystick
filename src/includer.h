@@ -4,6 +4,7 @@
 #include <esp_task_wdt.h>
 #include <esp_heap_caps.h>
 #include <Wire.h>
+#include "settings.h"
 
 #if USE_JOYSTICK
     #include <Joystick_ESP32S2.h>

@@ -1,15 +1,10 @@
+#pragma once
 #include <Arduino.h>
 #include "settings.h"
 #include "initiator.h"
 #include "func_include.h"
 #include <esp_task_wdt.h>
 #include <esp_heap_caps.h>
-
-
-    //static int task_number0 = 0;
-    static int task_number1 = 0;
-
-//  xTaskCreate (task_tofsensor,"Time of flight sensor task",1000,(void*)&task_number0,1,NULL);
 
 
 void JoystickLoop (void* pvParameters) {
@@ -22,6 +17,37 @@ void JoystickLoop (void* pvParameters) {
   int TC =0;
   long lastrun = millis();
   int printafter = 200;
+
+  /* Initiate the joystick oject*/
+        Joystick.setXAxisRange(0, 65535);
+        Joystick.setYAxisRange(0, 65535);
+        Joystick.setZAxisRange(0, 65535);
+        Joystick.setRxAxisRange(0, 65535);
+        Joystick.setRyAxisRange(0, 65535);
+        Joystick.setRzAxisRange(0, 65535);
+        Joystick.setThrottleRange(0, 65535);
+        Joystick.setRudderRange(0, 65535);
+        Joystick.setAcceleratorRange(0,65535);
+        Joystick.setSteeringRange(0,65535);
+        Joystick.setBrakeRange(0,65535);
+        Joystick.begin(false); // no auto send
+        Serial.println("joystick started");
+
+        delay(50);
+        for(mstep =0; mstep < NUM_BUTTONS; mstep++){
+          myjoy_buttons[mstep] = 0;
+        }
+
+        for(mstep =0; mstep < NUM_HATS; mstep++){
+          myjoy_hats[mstep] = -1;
+        }
+        for(mstep =0; mstep < NUM_AXIS; mstep++){
+          myjoy_axis[mstep] = 12345;
+        }
+  /* now that it's initiated, let the games begin*/
+
+
+
     esp_task_wdt_init(5, false);
     esp_task_wdt_add(NULL); 
   while (1) {
@@ -93,17 +119,5 @@ void JoystickLoop (void* pvParameters) {
 
 
 void RunTask_JoystickLoop(){
-  /*
-  xTaskCreatePinnedToCore (
-    ADSLoop,     // Function to implement the task
-    "Reading out the connected ADS1115 devices",   // Name of the task
-    20000,      // Stack size in words
-    NULL,      // Task input parameter
-    10,         // Priority of the task
-    NULL,      // Task handle.
-    0          // Core where the task should run
-  );
-*/
-xTaskCreate (JoystickLoop,"Puts the data into the joystick object",20000,(void*)&task_number0,1,NULL);
-
+  xTaskCreate (JoystickLoop,"Puts the data into the joystick object",20000,(void*)&task_number0,1,NULL);
 }

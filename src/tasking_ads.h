@@ -9,6 +9,25 @@
 
 
 void ADSLoop (void* pvParameters) {
+  double FilterLimit = 0.1;
+  Ewma adcFilter[16] = {
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit),
+(FilterLimit)
+};
   int16_t ANALOGDATA[16];
   int I;
   int Z;
@@ -35,7 +54,10 @@ void ADSLoop (void* pvParameters) {
     vTaskDelay(1);
     for (I = 0; I < ADS_COUNT;I++){
         for(Z=0; Z < 4 ; Z++){
-          ANALOGDATA[cnt] = adc[I].readADC_SingleEnded(Z);
+        ANALOGDATA[cnt] = (int16_t) adcFilter[cnt].filter(adc[I].readADC_SingleEnded(Z));
+
+
+//          ANALOGDATA[cnt] = adc[I].readADC_SingleEnded(Z);
           cnt++;
         }       
     }

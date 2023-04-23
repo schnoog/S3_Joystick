@@ -5,6 +5,7 @@
 #include <esp_heap_caps.h>
 #include <Wire.h>
 #include "settings.h"
+#include <Ewma.h>
 
 #if USE_JOYSTICK
     #include <Joystick_ESP32S2.h>

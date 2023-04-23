@@ -114,6 +114,7 @@ void setup(){
                 Serial.println(" ads 1115 available");
                 ////if(!adc[X].init(  )){
                 adc[X].setGain(GAIN_ONE);
+                adc[X].setDataRate(RATE_ADS1115_860SPS);
                 if(!adc[X].begin( ADS1115_AVAILABLE[X] )){
                     Serial.println("ADS1115 not connected!");
                     

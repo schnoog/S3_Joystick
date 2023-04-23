@@ -9,6 +9,12 @@
 
 and that all on an ESP32-S3 
 
+### Main target
+- Easy to use baseplate to create a game-controller
+- Dynamic IO - Joystick/Gamepad assignedment
+- Digital IOs debounced
+- Analog inputs rolling average output
+
 ### Target performance
 - \>= 100 joystick updates per seconds
 - \>= 40 MCP23017 IO readouts per second

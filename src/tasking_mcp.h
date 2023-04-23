@@ -52,7 +52,7 @@ void MCPLoop (void* pvParameters) {
     }
 
     esp_task_wdt_reset();
-    vTaskDelay(5);    
+    vTaskDelay(2);    
   }
 }
 

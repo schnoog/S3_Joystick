@@ -39,7 +39,7 @@ void ADSLoop (void* pvParameters) {
           cnt++;
         }       
     }
-    vTaskDelay(1);
+    //vTaskDelay(1);
     cnt = 0;
     if (xSemaphoreTake (xMutex, portMAX_DELAY)) {  // take the mutex  
       ADSCycle++; 
@@ -52,7 +52,7 @@ void ADSLoop (void* pvParameters) {
       xSemaphoreGive (xMutex);  // release the mutex
     }
     esp_task_wdt_reset();
-    vTaskDelay(5);    
+    vTaskDelay(2);    
   }
 }
 

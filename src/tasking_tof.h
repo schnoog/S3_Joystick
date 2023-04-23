@@ -17,7 +17,7 @@ void TOFLoop (void* pvParameters) {
             Serial.println(F("Failed to boot VL53L0X"));
         }else{ 
             Serial.println(F("VL53L0X ready"));
-            lox.setMeasurementTimingBudgetMicroSeconds(200000);
+            lox.setMeasurementTimingBudgetMicroSeconds(TOFMeasurementTime);
             lox.startRangeContinuous();
         }
     /* tof sensor initiated, let's the game begin*/
@@ -37,10 +37,10 @@ void TOFLoop (void* pvParameters) {
         xSemaphoreGive (xMutex);  // release the mutex
       }
     }else{
-      vTaskDelay(50);
+      vTaskDelay(TOFWaitDelay);
     }
       esp_task_wdt_reset();
-      vTaskDelay(50);    
+      vTaskDelay(TOFLoopDelay);    
   }
 }
 

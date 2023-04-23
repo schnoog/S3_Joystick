@@ -14,9 +14,6 @@
 
 #if USE_ADS1115
     Adafruit_ADS1115 adc[ADS1115_MAXCOUNT];
-    //ADS1115 adc[ADS1115_MAXCOUNT];
-////    ADS1115_WE adc[ADS1115_MAXCOUNT];
-    //ADS1115_WE adc = ADS1115_WE(ADS1115_I2C_ADDRESS);
 #endif
 
 #if USE_VL53L0X
@@ -32,7 +29,7 @@ int RealButtonCount = 0;
 uint8_t myjoy_buttons[NUM_BUTTONS];
 int16_t  myjoy_hats[NUM_HATS];
 uint32_t myjoy_axis[17];  //max of 4 ads1115  + VL53
-//uint8_t mymcp_data[MCP23017_MAXCOUNT * 16 ];
+
 
 
 int MCPCycle = 0;
